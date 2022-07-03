@@ -1,19 +1,22 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import logo from './icon.png';
-import { Autocomplete, TextField } from '@mui/material';
+import { Autocomplete, TextField, Modal } from '@mui/material';
 import axios from '../axios';
-import getSymbolFromCurrency from 'currency-symbol-map';
+import { Context } from '../Context';
 import CurrencyFlag from 'react-currency-flags';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import { useContext } from 'react';
 export default function Header() {
 	const [value, setValue] = useState('');
 	const [searchOption, setSearchOption] = useState([]);
 	const [countries, setCountries] = useState([]);
-	const [currency, setCurrency] = useState('');
+	const [currency, setCurrency] = useState('SGD');
+	const [context, setContext] = useContext(Context);
 
 	const handleChange = (event) => {
 		setCurrency(event.target.value);
@@ -25,7 +28,7 @@ export default function Header() {
 			setCountries(allCurrency.data);
 		}
 		allCurrency();
-	});
+	}, []);
 
 	const styles = {
 		appBar: {
@@ -44,7 +47,7 @@ export default function Header() {
 				width: 0
 			},
 			height: 40,
-			width: 60,
+			width: 70,
 			overflow: 'hidden'
 		}
 	};
@@ -54,6 +57,14 @@ export default function Header() {
 		const result = await axios.get(`searchGames/?search=${searchKeyword}`);
 		const { results } = result.data;
 		setSearchOption(results);
+	};
+
+	const handleSearchModal = async (searchGame) => {
+		console.log(searchGame.replace(/ /g, '%20'));
+		const result = await axios.get(
+			`/${searchGame.replace(/ /g, '%20')}?currency=${currency}`
+		);
+		setContext({ open: true, data: result.data });
 	};
 
 	return (
@@ -71,7 +82,6 @@ export default function Header() {
 					/>
 					<Autocomplete
 						value={value}
-						onChange={(event, newValue) => console.log(event, newValue)}
 						onInputChange={(event) => {
 							handleSearchOption(event.target.value);
 						}}
@@ -93,7 +103,11 @@ export default function Header() {
 							return option.title;
 						}}
 						renderOption={(props, option) => (
-							<li {...props}>
+							<li
+								{...props}
+								onClick={(event) => {
+									handleSearchModal(event.target.innerText);
+								}}>
 								{option.imageUrl ? (
 									<img
 										src={option.imageUrl}
@@ -130,7 +144,10 @@ export default function Header() {
 						onChange={handleChange}
 						sx={styles.select}>
 						{countries.map((country) => (
-							<MenuItem key={country.id} value={country.id}>
+							<MenuItem
+								key={country.id}
+								value={country.id}
+								style={{ display: 'flex', justifyContent: 'center' }}>
 								<CurrencyFlag currency={country.id} width={20} />
 							</MenuItem>
 						))}
