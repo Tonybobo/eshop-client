@@ -6,7 +6,7 @@ import Toolbar from '@mui/material/Toolbar';
 import logo from './icon.png';
 import { Autocomplete, TextField, Modal } from '@mui/material';
 import axios from '../axios';
-import { Context } from '../Context';
+import { Context, CurrencyContext } from '../Context';
 import CurrencyFlag from 'react-currency-flags';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
@@ -17,9 +17,11 @@ export default function Header() {
 	const [countries, setCountries] = useState([]);
 	const [currency, setCurrency] = useState('SGD');
 	const [context, setContext] = useContext(Context);
+	const [currencies, setCurrencies] = useContext(CurrencyContext);
 
 	const handleChange = (event) => {
 		setCurrency(event.target.value);
+		setCurrencies(event.target.value);
 	};
 
 	useEffect(() => {

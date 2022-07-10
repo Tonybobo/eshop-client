@@ -3,7 +3,7 @@ import Container from '@mui/material/Container';
 import Header from './component/Header';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
-import { Context } from './Context';
+import { Context, CurrencyContext } from './Context';
 import { useState } from 'react';
 import GamesModal from './component/Modal';
 
@@ -15,16 +15,19 @@ const darkTheme = createTheme({
 
 function App() {
 	const [context, setContext] = useState({ open: false, data: '' });
+	const [currencies, setCurrencies] = useState('SGD');
 	return (
 		<ThemeProvider theme={darkTheme}>
 			<Context.Provider value={[context, setContext]}>
-				<div className="App">
-					<Container maxWidth="md">
-						<Header />
-						{/* main */}
-						<GamesModal />
-					</Container>
-				</div>
+				<CurrencyContext.Provider value={[currencies, setCurrencies]}>
+					<div className="App">
+						<Container maxWidth="md">
+							<Header />
+							{/* main */}
+							<GamesModal />
+						</Container>
+					</div>
+				</CurrencyContext.Provider>
 			</Context.Provider>
 		</ThemeProvider>
 	);
