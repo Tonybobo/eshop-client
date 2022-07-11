@@ -72,7 +72,12 @@ export default function Header() {
 	return (
 		<Box sx={{ flexGrow: 1, zIndex: 2 }}>
 			<AppBar position="static" sx={styles.appBar}>
-				<Toolbar>
+				<Toolbar
+					style={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						padding: 0
+					}}>
 					<img
 						src={logo}
 						style={{
@@ -124,7 +129,7 @@ export default function Header() {
 								{option.title}
 							</li>
 						)}
-						sx={{ width: 500, marginX: 2, padding: 1 }}
+						sx={{ maxWidth: 600, marginX: 2, padding: 1, width: 500 }}
 						freeSolo
 						renderInput={(params) => (
 							<TextField
@@ -144,12 +149,10 @@ export default function Header() {
 						label="Countries"
 						value={currency}
 						onChange={handleChange}
+						IconComponent="none"
 						sx={styles.select}>
 						{countries.map((country) => (
-							<MenuItem
-								key={country.id}
-								value={country.id}
-								style={{ display: 'flex', justifyContent: 'center' }}>
+							<MenuItem key={country.id} value={country.id}>
 								<CurrencyFlag currency={country.id} width={20} />
 							</MenuItem>
 						))}
