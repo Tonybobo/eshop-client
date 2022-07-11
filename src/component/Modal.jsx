@@ -12,6 +12,7 @@ function GamesModal({ id }) {
 	const [currencies, setCurrencies] = useContext(CurrencyContext);
 	const { title, imageUrl, description, store, publishers, releaseDate } =
 		context.data;
+
 	let allStore = [];
 	if (store) {
 		for (const key in store) {
@@ -25,7 +26,7 @@ function GamesModal({ id }) {
 
 	return (
 		<Dialog
-			maxWidth="lg"
+			maxWidth="md"
 			open={context.open}
 			onClose={() => setContext({ open: false, data: {} })}
 			aria-labelledby="responsive-dialog-title">
@@ -58,17 +59,21 @@ function GamesModal({ id }) {
 						allStore.map((item) => {
 							return (
 								<>
-									<ListItem
-										disablePadding
-										secondaryAction={
-											<>
-												<ListItemText
-													primary={`${item.price.toFixed(2)} ${currencies}`}
-												/>
-											</>
-										}>
-										<ListItemIcon sx={{ ml: 1 }}>{item.country}</ListItemIcon>
-									</ListItem>
+									{item.price ? (
+										<ListItem
+											disablePadding
+											secondaryAction={
+												<>
+													<ListItemText
+														primary={`${item?.price.toFixed(2)} ${currencies}`}
+													/>
+												</>
+											}>
+											<ListItemIcon sx={{ ml: 1 }}>{item.country}</ListItemIcon>
+										</ListItem>
+									) : (
+										<></>
+									)}
 								</>
 							);
 						})}
