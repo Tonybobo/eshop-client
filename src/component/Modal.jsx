@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Paper, Typography, Dialog } from '@mui/material';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -7,7 +8,7 @@ import { useContext } from 'react';
 import { Context, CurrencyContext } from './../Context';
 import moment from 'moment';
 
-function GamesModal({ id }) {
+function GamesModal() {
 	const [context, setContext] = useContext(Context);
 	const [currencies, setCurrencies] = useContext(CurrencyContext);
 	const { title, imageUrl, description, store, publishers, releaseDate } =
@@ -61,6 +62,7 @@ function GamesModal({ id }) {
 								<>
 									{item.price ? (
 										<ListItem
+											key={item.country}
 											disablePadding
 											secondaryAction={
 												<>

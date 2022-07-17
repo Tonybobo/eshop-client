@@ -62,7 +62,6 @@ export default function Header() {
 	};
 
 	const handleSearchModal = async (searchGame) => {
-		console.log(searchGame.replace(/ /g, '%20'));
 		const result = await axios.get(
 			`/${searchGame.replace(/ /g, '%20')}?currency=${currency}`
 		);
@@ -111,6 +110,7 @@ export default function Header() {
 						}}
 						renderOption={(props, option) => (
 							<li
+								key={option.title}
 								{...props}
 								onClick={(event) => {
 									handleSearchModal(event.target.innerText);
@@ -149,7 +149,7 @@ export default function Header() {
 						label="Countries"
 						value={currency}
 						onChange={handleChange}
-						IconComponent="none"
+						IconComponent=""
 						sx={styles.select}>
 						{countries.map((country) => (
 							<MenuItem key={country.id} value={country.id}>

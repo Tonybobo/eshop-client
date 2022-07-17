@@ -4,8 +4,9 @@ import Header from './component/Header';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import BrokenImageIcon from '@mui/icons-material/BrokenImage';
 import Pagination from '@mui/material/Pagination';
+import CircularProgress from '@mui/material/CircularProgress';
 import { Context, CurrencyContext } from './Context';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import GamesModal from './component/Modal';
 import {
 	Paper,
@@ -32,16 +33,17 @@ function App() {
 	const [data, setData] = useState([]);
 	const [page, setPage] = useState(1);
 	const [count, setCount] = useState(1);
+	const [loading, setLoading] = useState(true);
 
 	const handlePaginationChange = async (event, value) => {
+		setLoading(true);
+		const scroller = document.querySelector('#scroller');
+		scroller.scrollTop = 0;
+		event.preventDefault();
 		setPage(value);
 		const games = await axios.get(`?page=${value}`);
 		setData(games.data.results);
-		window.scroll({
-			top: 0,
-			left: 0,
-			behavior: 'smooth'
-		});
+		setLoading(false);
 	};
 	const handleGameInfo = async (gameTitle) => {
 		const result = await axios.get(
@@ -55,7 +57,9 @@ function App() {
 			const games = await axios.get('');
 			setData(games.data.results);
 			setCount(games.data.count);
+			setLoading(false);
 		}
+
 		listGames();
 	}, []);
 	return (
@@ -83,6 +87,7 @@ function App() {
 									mt: 1
 								}}>
 								<List
+									id="scroller"
 									sx={{
 										width: '100%',
 										position: 'relative',
@@ -90,41 +95,45 @@ function App() {
 										maxHeight: 460,
 										mt: 2
 									}}>
-									{data?.map((game) => {
-										return (
-											<>
-												<ListItem
-													key={game.title}
-													onClick={() => handleGameInfo(game.title)}>
-													<ListItemIcon>
-														<ListItemAvatar>
-															<Avatar
-																variant="square"
-																alt={game.title}
-																src={game.imageUrl}
-																sx={{ width: 60, height: 60, mr: 2 }}>
-																<BrokenImageIcon />
-															</Avatar>
-														</ListItemAvatar>
-													</ListItemIcon>
-													<div>
-														<ListItemText primary={game.title} />
-														<Typography
-															sx={{
-																overflow: 'hidden',
-																textOverflow: 'ellipsis',
-																display: '-webkit-box',
-																WebkitLineClamp: '2',
-																WebkitBoxOrient: 'vertical'
-															}}>
-															{game.description}
-														</Typography>
-													</div>
-												</ListItem>
-												<Divider variant="inset" component="li" />
-											</>
-										);
-									})}
+									{loading ? (
+										<CircularProgress />
+									) : (
+										data?.map((game) => {
+											return (
+												<>
+													<ListItem
+														key={game.title}
+														onClick={() => handleGameInfo(game.title)}>
+														<ListItemIcon>
+															<ListItemAvatar>
+																<Avatar
+																	variant="square"
+																	alt={game.title}
+																	src={game.imageUrl}
+																	sx={{ width: 60, height: 60, mr: 2 }}>
+																	<BrokenImageIcon />
+																</Avatar>
+															</ListItemAvatar>
+														</ListItemIcon>
+														<div>
+															<ListItemText primary={game.title} />
+															<Typography
+																sx={{
+																	overflow: 'hidden',
+																	textOverflow: 'ellipsis',
+																	display: '-webkit-box',
+																	WebkitLineClamp: '2',
+																	WebkitBoxOrient: 'vertical'
+																}}>
+																{game.description}
+															</Typography>
+														</div>
+													</ListItem>
+													<Divider variant="inset" component="li" />
+												</>
+											);
+										})
+									)}
 								</List>
 								<Pagination
 									sx={{ mx: 'auto' }}
