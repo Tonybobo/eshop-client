@@ -34,6 +34,7 @@ function App() {
 	const [page, setPage] = useState(1);
 	const [count, setCount] = useState(1);
 	const [loading, setLoading] = useState(true);
+	const [selectedIndex, setSelectedIndex] = useState(null);
 
 	const handlePaginationChange = async (event, value) => {
 		setLoading(true);
@@ -46,6 +47,7 @@ function App() {
 		setLoading(false);
 	};
 	const handleGameInfo = async (gameTitle) => {
+		setSelectedIndex(gameTitle);
 		const result = await axios.get(
 			`/${gameTitle.replace(/ /g, '%20')}?currency=${currencies}`
 		);
@@ -103,6 +105,8 @@ function App() {
 												<>
 													<ListItem
 														key={game.title}
+														style={{ cursor: 'pointer' }}
+														selected={selectedIndex === game.title}
 														onClick={() => handleGameInfo(game.title)}>
 														<ListItemIcon>
 															<ListItemAvatar>
